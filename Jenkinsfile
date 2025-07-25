@@ -13,8 +13,9 @@ node {
     def jdk = tool name: 'jdk11'
     def scannerHome = tool name: 'sonar'
 
-    // 2. Wrap your commands in withEnv to add the JDK to the PATH
-    withEnv(["JAVA_HOME=${jdk}", "PATH+MAVEN=${jdk}/bin"]) {
+    // 2. This is the corrected 'withEnv' block.
+    // Note 'PATH+JDK' instead of 'PATH+MAVEN'
+    withEnv(["JAVA_HOME=${jdk}", "PATH+JDK=${jdk}/bin"]) {
         withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
             sh """
                ${scannerHome}/bin/sonar-scanner \
