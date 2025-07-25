@@ -8,15 +8,28 @@ node {
         git url: 'https://github.com/nrejepov/devops-webapp.git'                
     }
 
-    stage('build') {
-        sh "${GRADLE_HOME}/bin/gradle build"
-    }
-
     stage('sonar-scanner') {
-      def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-      withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-        sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://${SONARQUBE_HOSTNAME}:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=WebApp -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.java.binaries=build/**/* -Dsonar.language=java"
-      }
+    tools {
+        // This line forces this stage to use Java 11
+        jdk 'jdk11' 
     }
-
+    steps {
+        def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+            // Using triple-quotes makes the command easier to read
+            sh """
+               ${sonarqubeScannerHome}/bin/sonar-scanner \
+               -e \
+               -Dsonar.host.url=http://${SONARQUBE_HOSTNAME}:9000 \
+               -Dsonar.login=${sonarLogin} \
+               -Dsonar.projectName=WebApp \
+               -Dsonar.projectVersion=${env.BUILD_NUMBER} \
+               -Dsonar.projectKey=GS \
+               -Dsonar.sources=src/main/ \
+               -Dsonar.tests=src/test/ \
+               -Dsonar.java.binaries=build/**/* \
+               -Dsonar.language=java
+            """
+        }
+    }
 }
