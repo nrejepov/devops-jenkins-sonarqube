@@ -9,7 +9,6 @@ node {
         }
 
     // All subsequent commands must run inside the repository directory.
-    dir('devops-webapp') {
         stage('build') {
             def GRADLE_HOME = tool name: 'gradle-4.10.2', type: 'hudson.plugins.gradle.GradleInstallation'
             sh "${GRADLE_HOME}/bin/gradle build"
@@ -43,5 +42,4 @@ node {
                 }
             }
         }
-    }
 }
