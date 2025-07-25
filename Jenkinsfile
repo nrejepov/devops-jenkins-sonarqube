@@ -22,7 +22,17 @@ node {
             // Use withEnv to set the JAVA_HOME and PATH for this stage
             withEnv(["JAVA_HOME=${jdk8}", "PATH+JDK=${jdk8}/bin"]) {
                 withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-                    sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://${SONARQUBE_HOSTNAME}:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=WebApp -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.java.binaries=build/**/* -Dsonar.language=java"
+                    sh '''
+                       ${sonarqubeScannerHome}/bin/sonar-scanner \
+                       -Dsonar.host.url=http://${SONARQUBE_HOSTNAME}:9000 \
+                       -Dsonar.login=${sonarLogin} \
+                       -Dsonar.projectName=WebApp \
+                       -Dsonar.projectVersion=${env.BUILD_NUMBER} \
+                       -Dsonar.projectKey=GS \
+                       -Dsonar.sources=src/main/ \
+                       -Dsonar.java.binaries=build/**/* \
+                       -Dsonar.language=java
+                    '''
                 }
             }
         }
