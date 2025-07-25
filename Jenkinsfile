@@ -4,8 +4,9 @@ node {
 
     // This stage checks out the code first.
     stage('prep') {
-        git url: 'https://github.com/nrejepov/devops-webapp.git'
-    }
+            // Explicitly check out the latest code from the 'master' branch
+            git branch: 'master', url: 'https://github.com/nrejepov/devops-webapp.git'
+        }
 
     // All subsequent commands must run inside the repository directory.
     dir('devops-webapp') {
